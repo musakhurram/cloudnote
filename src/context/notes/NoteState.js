@@ -4,7 +4,7 @@ import NoteContext from "./NoteContext";
 const NoteState = (props) => {
   const notesInitial = [
     {
-      _id: "6a75bb728fc2bac98ba7dd2da",
+      _id: "note-1",
       user: "6a74882265001e465966bd0e",
       title: "My title",
       description: "Wake up early",
@@ -13,7 +13,7 @@ const NoteState = (props) => {
       __v: 0,
     },
     {
-      _id: "6a75bb738fc2bac98db7dd2db",
+      _id: "note-2",
       user: "6a74882265001e465966bd0e",
       title: "My title",
       description: "Wake up early",
@@ -22,7 +22,7 @@ const NoteState = (props) => {
       __v: 0,
     },
     {
-      _id: "6a75bb728fc2bac9d8b7dd2da",
+      _id: "note-3",
       user: "6a74882265001e465966bd0e",
       title: "My title",
       description: "Wake up early",
@@ -31,7 +31,7 @@ const NoteState = (props) => {
       __v: 0,
     },
     {
-      _id: "6a75bb738fc2bac98b7dd2db",
+      _id: "note-4",
       user: "6a74882265001ed465966bd0e",
       title: "My title",
       description: "Wake up early",
@@ -40,7 +40,7 @@ const NoteState = (props) => {
       __v: 0,
     },
     {
-      _id: "6a75bb728fc2basc98b7dd2da",
+      _id: "note-5",
       user: "6a74882265001e465966bd0e",
       title: "My title",
       description: "Wake up early",
@@ -49,7 +49,7 @@ const NoteState = (props) => {
       __v: 0,
     },
     {
-      _id: "6a75bb738fc2bsac98b7dd2db",
+      _id: "note-6",
       user: "6a74882265001e465966bd0e",
       title: "My title",
       description: "Wake up early",
@@ -64,18 +64,21 @@ const NoteState = (props) => {
   //Add a note
   const addnote = (title, description, tag) => {
     const note = {
-      _id: "6a75bb738fc2bsac98b7dd2db",
+      _id: `note-${Date.now()}`,
       user: "6a74882265001e465966bd0e",
       title: title,
       description: description,
       tag: tag,
-      date: "2026-08-07T11:03:15.983Z",
+      date: new Date().toISOString(),
       __v: 0,
     };
-    setNotes(notes.concat(note));
+    setNotes((prevNotes) => prevNotes.concat(note));
   };
   //Delete a note
-  const deletenote = (id) => {};
+  const deletenote = (id) => {
+    console.log("delete", id);
+    setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
+  };
   //edit a note
   const editnote = (id) => {};
   return (

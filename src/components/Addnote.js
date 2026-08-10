@@ -3,12 +3,16 @@ import NoteContext from "../context/notes/NoteContext";
 
 const Addnote = () => {
   const context = useContext(NoteContext);
-  const [note, setNote] = useState({ title: "", description: "", tag: "default" });
+  const [note, setNote] = useState({
+    title: "",
+    description: "",
+    tag: "default",
+  });
   const { addnote } = context;
 
   const handleClick = (e) => {
     e.preventDefault();
-    addnote(note.title,note.description,note.tag);
+    addnote(note.title, note.description, note.tag);
   };
 
   const onChange = (e) => {
@@ -60,7 +64,7 @@ const Addnote = () => {
           />
         </div>
         <button type="submit" className="btn btn-primary" onClick={handleClick}>
-          Submit
+          Add Note
         </button>
       </form>
     </div>
