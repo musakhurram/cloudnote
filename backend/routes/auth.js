@@ -50,7 +50,7 @@ router.post('/createuser', [
         });
     } catch (err) {
         //err msg
-         console.error(error.message);
+         console.error(err.message);
         res.status(500).send("Internal Server Error");
     }
 });
