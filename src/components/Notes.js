@@ -102,7 +102,7 @@ const Notes = () => {
             id="description"
             name="description"
             value={note.description}
-            onChange={onChange}
+            onChange={onChange} minLength={5} required
           />
         </div>
         <div className="mb-3">

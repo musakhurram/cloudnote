@@ -37,7 +37,7 @@ const Login = (props) => {
   };
 
   return (
-    <div className="my-3">
+    <div className="container my-3">
       <form onSubmit={HandleSubmit}>
         <div className="form-group">
           <label htmlFor="exampleInputEmail1">Email address</label>
