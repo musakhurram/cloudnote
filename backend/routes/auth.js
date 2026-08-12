@@ -42,10 +42,9 @@ router.post('/createuser', [
         }
         const authToken = jwt.sign(data,JWT_SECRET);
 
-        res.json({ authToken });
-
         res.status(201).json({
             success: true,
+            authToken,
             user
         });
     } catch (err) {
@@ -61,6 +60,7 @@ router.post('/login', [
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password cannot be blank').exists()
 ], async (req, res) => {
+    
     //if any err return bad request and the errors
       const errors = validationResult(req);
 
@@ -83,7 +83,7 @@ router.post('/login', [
             }
         }
         const authToken = jwt.sign(data, JWT_SECRET);
-        res.json({ authToken });
+        res.json({ success: true, authToken });
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error");
