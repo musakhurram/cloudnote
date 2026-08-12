@@ -19,14 +19,15 @@ const Login = (props) => {
           const json = await response.json();
           console.log(json);
           if (json.success && json.authToken) {
-            // save the auth token
             localStorage.setItem('token', json.authToken);
+            props.showAlert("Logged In successfully", "success");
             navigate("/");
           } else if (json.authToken) {
             localStorage.setItem('token', json.authToken);
+            props.showAlert("Logged In successfully", "success");
             navigate("/");
           } else {
-            alert("invalid credentials")
+            props.showAlert("Invalid credentials", "danger");
           }
         } catch (error) {
           console.error('Network or server error:', error);
