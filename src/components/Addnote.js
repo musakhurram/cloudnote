@@ -6,13 +6,18 @@ const Addnote = () => {
   const [note, setNote] = useState({
     title: "",
     description: "",
-    tag: "default",
+    tag: "",
   });
   const { addnote } = context;
 
   const handleClick = (e) => {
     e.preventDefault();
-    addnote(note.title, note.description, note.tag);
+    if (note.title.trim().length < 3 || note.description.trim().length < 5) {
+      console.error("Title must be at least 3 chars and description at least 5 chars.");
+      return;
+    }
+    addnote(note.title.trim(), note.description.trim(), note.tag.trim());
+    setNote({ title: "", description: "", tag: "default" });
   };
 
   const onChange = (e) => {

@@ -42,14 +42,18 @@ const NoteState = (props) => {
       setNotes((prevNotes) => [note, ...prevNotes]);
 
       try {
-        await fetch(`${host}/api/notes/addnote`, {
+        const response = await fetch(`${host}/api/notes/addnote`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "auth-token": "demo-token",
+            "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmE3NDg4MjI2NTAwMWU0NjU5NjZiZDBlIn0sImlhdCI6MTc4NjA5Njk1Nn0.jssWg0qbG2g8W-ySS8OOclYbM9c4XUVHvauUunJb_mo",
           },
           body: JSON.stringify({ title, description, tag }),
         });
+        if (!response.ok) {
+          const errorBody = await response.json();
+          console.error("Add note rejected:", response.status, errorBody);
+        }
       } catch (error) {
         console.error("Failed to add note:", error);
       }
@@ -66,7 +70,7 @@ const NoteState = (props) => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "auth-token": "demo-token",
+            "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmE3NDg4MjI2NTAwMWU0NjU5NjZiZDBlIn0sImlhdCI6MTc4NjA5Njk1Nn0.jssWg0qbG2g8W-ySS8OOclYbM9c4XUVHvauUunJb_mo",
           },
         });
       } catch (error) {
@@ -87,7 +91,7 @@ const NoteState = (props) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "auth-token": "demo-token",
+            "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmE3NDg4MjI2NTAwMWU0NjU5NjZiZDBlIn0sImlhdCI6MTc4NjA5Njk1Nn0.jssWg0qbG2g8W-ySS8OOclYbM9c4XUVHvauUunJb_mo",
           },
           body: JSON.stringify({ title, description, tag }),
         });

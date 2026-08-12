@@ -4,7 +4,7 @@ import NoteContext from "../context/notes/NoteContext";
 const Noteitem = (props) => {
   const context = useContext(NoteContext);
   const { deletenote } = context;
-  const { note } = props;
+  const { note,updatenote } = props;
 
   const handleDelete = () => {
     deletenote(note._id);
@@ -24,7 +24,12 @@ const Noteitem = (props) => {
             >
               <i className="fa-solid fa-trash"></i>
             </button>
-            <button type="button" className="btn btn-link p-0" aria-label="Edit note">
+            <button
+              type="button"
+              className="btn btn-link p-0"
+              aria-label="Edit note"
+              onClick={() => updatenote(note)}
+            >
               <i className="fa-solid fa-pen-to-square"></i>
             </button>
           </div>
