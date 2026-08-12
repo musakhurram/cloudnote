@@ -17,7 +17,7 @@ const Addnote = () => {
       return;
     }
     addnote(note.title.trim(), note.description.trim(), note.tag.trim());
-    setNote({ title: "", description: "", tag: "default" });
+    setNote({ title: "", description: "", tag: "General" });
   };
 
   const onChange = (e) => {
@@ -68,7 +68,7 @@ const Addnote = () => {
             onChange={onChange}
           />
         </div>
-        <button type="submit" className="btn btn-primary" onClick={handleClick}>
+        <button type="submit" className="btn btn-primary" onClick={handleClick} disabled={note.title.length<=3 || note.description.length<=5}>
           Add Note
         </button>
       </form>

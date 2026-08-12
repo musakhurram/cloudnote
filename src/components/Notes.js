@@ -5,31 +5,41 @@ import NoteContext from "../context/notes/NoteContext";
 
 const Notes = () => {
   const context = useContext(NoteContext);
-  const { notes, getnotes } = context;
+  const { notes, getnotes, editnote } = context;
    const [note, setNote] = useState({
+      id : "",
       title: "",
       description: "",
       tag: "",
     });
-    
+  const ref = useRef(null);
+  const refClose = useRef(null);   
   const updatenote = (currentNote) => {
     ref.current.click();
-    setNote(currentNote);
+    setNote({
+      id: currentNote._id,
+      title: currentNote.title,
+      description: currentNote.description,
+      tag: currentNote.tag,
+    });
   };
-   const handleClick = (e) => {
+
+  const handleClick = (e) => {
     e.preventDefault();
     if (note.title.trim().length < 3 || note.description.trim().length < 5) {
       console.error("Title must be at least 3 chars and description at least 5 chars.");
       return;
     }
     setNote({ title: "", description: "", tag: "default" });
+     editnote(note.id,note.title,note.description,note.tag);
+    refClose.current.click();
   };
 
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
 
-  const ref = useRef(null);
+ 
   // Fetch notes on mount (include getnotes in deps for lint safety)
   useEffect(() => {
     getnotes();
@@ -108,9 +118,6 @@ const Notes = () => {
             onChange={onChange}
           />
         </div>
-        <button type="submit" className="btn btn-primary" onClick={handleClick}>
-          Add Note
-        </button>
       </form>
             </div>
             <div className="modal-footer">
@@ -121,7 +128,14 @@ const Notes = () => {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                ref={refClose}
+                data-bs-dismiss="modal"
+                onClick={handleClick}
+                disabled={note.title.length<=3 || note.description.length<=5}
+              >
                 Update Note
               </button>
             </div>
@@ -130,6 +144,9 @@ const Notes = () => {
       </div>
       <div className="row my-3">
         <h2>Your Note</h2>
+        <div className="container mx-2">
+        {notes.length===0 && 'No notes to display'}
+        </div>
         {notes.map((note) => {
           return (
             <Noteitem key={note._id} updatenote={updatenote} note={note} />
