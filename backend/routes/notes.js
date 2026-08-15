@@ -52,14 +52,22 @@ router.put('/updatenote/:id', fetchuser, [
     try {
         let note = await Note.findById(req.params.id);
         if (!note) {
-            return res.status(404).send("Note not found");
+            return res.status(404).send({ error: "Note not found" });
         }
 
         if (note.user.toString() !== req.user.id) {
-            return res.status(401).send("Not Allowed");
+            return res.status(401).send({ error: "Not Allowed" });
         }
 
-        note = await Note.findByIdAndUpdate(req.params.id, { $set: req.body }, { returnDocument: 'after' });
+        // Build the update from known fields only so a user cannot
+        // reassign the note to another user via mass assignment.
+        const { title, description, tag } = req.body;
+        const updateFields = {};
+        if (title) updateFields.title = title;
+        if (description) updateFields.description = description;
+        if (tag) updateFields.tag = tag;
+
+        note = await Note.findByIdAndUpdate(req.params.id, { $set: updateFields }, { new: true });
         res.json(note);
     } catch (error) {
         console.error(error);

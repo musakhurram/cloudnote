@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
 import NoteContext from "../context/notes/NoteContext";
+import { useNavigate } from "react-router-dom";
 
 const Notes = () => {
   const context = useContext(NoteContext);
@@ -24,26 +25,31 @@ const Notes = () => {
     });
   };
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
     if (note.title.trim().length < 3 || note.description.trim().length < 5) {
       console.error("Title must be at least 3 chars and description at least 5 chars.");
       return;
     }
-    setNote({ title: "", description: "", tag: "default" });
-     editnote(note.id,note.title,note.description,note.tag);
-    refClose.current.click();
+    const success = await editnote(note.id, note.title, note.description, note.tag);
+    if (success) {
+      refClose.current.click();
+    }
   };
 
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
-
+  let navigate =useNavigate();
  
   // Fetch notes on mount (include getnotes in deps for lint safety)
   useEffect(() => {
-    getnotes();
-  }, [getnotes]);
+    if (localStorage.getItem("token")) {
+      getnotes();
+    } else {
+      navigate("/login");
+    }
+  }, [getnotes, navigate]);
   return (
     <>
       <Addnote />
@@ -134,7 +140,7 @@ const Notes = () => {
                 ref={refClose}
                 data-bs-dismiss="modal"
                 onClick={handleClick}
-                disabled={note.title.length<=3 || note.description.length<=5}
+                disabled={note.title.trim().length < 3 || note.description.trim().length < 5}
               >
                 Update Note
               </button>

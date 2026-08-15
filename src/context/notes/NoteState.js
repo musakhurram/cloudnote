@@ -3,18 +3,18 @@ import NoteContext from "./NoteContext";
 
 const NoteState = (props) => {
   const host = "http://localhost:5000";
-  const notesInitial = [];
+  const [notes, setNotes] = useState([]);
 
-  const [notes, setNotes] = useState(notesInitial);
+  const authHeaders = () => ({
+    "Content-Type": "application/json",
+    "auth-token": localStorage.getItem("token"),
+  });
 
   const getnotes = useCallback(async () => {
     try {
       const response = await fetch(`${host}/api/notes/fetchallnotes`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmE3NDg4MjI2NTAwMWU0NjU5NjZiZDBlIn0sImlhdCI6MTc4NjA5Njk1Nn0.jssWg0qbG2g8W-ySS8OOclYbM9c4XUVHvauUunJb_mo",
-        },
+        headers: authHeaders(),
       });
       if (response.ok) {
         const data = await response.json();
@@ -29,30 +29,18 @@ const NoteState = (props) => {
 
   const addnote = useCallback(
     async (title, description, tag) => {
-      const note = {
-        _id: `note-${Date.now()}`,
-        user: "demo-user",
-        title,
-        description,
-        tag,
-        date: new Date().toISOString(),
-        __v: 0,
-      };
-
-      setNotes((prevNotes) => [note, ...prevNotes]);
-
       try {
         const response = await fetch(`${host}/api/notes/addnote`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmE3NDg4MjI2NTAwMWU0NjU5NjZiZDBlIn0sImlhdCI6MTc4NjA5Njk1Nn0.jssWg0qbG2g8W-ySS8OOclYbM9c4XUVHvauUunJb_mo",
-          },
+          headers: authHeaders(),
           body: JSON.stringify({ title, description, tag }),
         });
-        if (!response.ok) {
-          const errorBody = await response.json();
-          console.error("Add note rejected:", response.status, errorBody);
+        const data = await response.json();
+        if (response.ok) {
+          // Only add the note the server actually saved for this user.
+          setNotes((prevNotes) => [data, ...prevNotes]);
+        } else {
+          console.error("Add note rejected:", response.status, data);
         }
       } catch (error) {
         console.error("Failed to add note:", error);
@@ -63,16 +51,16 @@ const NoteState = (props) => {
 
   const deletenote = useCallback(
     async (id) => {
-      setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
-
       try {
-        await fetch(`${host}/api/notes/deletenote/${id}`, {
+        const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmE3NDg4MjI2NTAwMWU0NjU5NjZiZDBlIn0sImlhdCI6MTc4NjA5Njk1Nn0.jssWg0qbG2g8W-ySS8OOclYbM9c4XUVHvauUunJb_mo",
-          },
+          headers: authHeaders(),
         });
+        if (response.ok) {
+          setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
+        } else {
+          console.error("Delete note rejected:", response.status, await response.text());
+        }
       } catch (error) {
         console.error("Failed to delete note:", error);
       }
@@ -82,28 +70,32 @@ const NoteState = (props) => {
 
   const editnote = useCallback(
     async (id, title, description, tag) => {
-      setNotes((prevNotes) =>
-        prevNotes.map((note) => (note._id === id ? { ...note, title, description, tag } : note))
-      );
-
       try {
-        await fetch(`${host}/api/notes/updatenote/${id}`, {
+        const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmE3NDg4MjI2NTAwMWU0NjU5NjZiZDBlIn0sImlhdCI6MTc4NjA5Njk1Nn0.jssWg0qbG2g8W-ySS8OOclYbM9c4XUVHvauUunJb_mo",
-          },
+          headers: authHeaders(),
           body: JSON.stringify({ title, description, tag }),
         });
+        const data = await response.json();
+        if (response.ok) {
+          setNotes((prevNotes) =>
+            prevNotes.map((note) => (note._id === id ? data : note))
+          );
+          return true;
+        } else {
+          console.error("Edit note rejected:", response.status, data);
+          return false;
+        }
       } catch (error) {
         console.error("Failed to edit note:", error);
+        return false;
       }
     },
     [host]
   );
 
   return (
-    <NoteContext.Provider value={{ notes, addnote, deletenote, editnote, getnotes }}>
+    <NoteContext.Provider value={{ notes, setNotes, addnote, deletenote, editnote, getnotes }}>
       {props.children}
     </NoteContext.Provider>
   );

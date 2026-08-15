@@ -8,6 +8,10 @@ const Signup = (props) => {
         const HandleSubmit= async (e)=>{
             e.preventDefault();
            const {name,email,password,cpassword}=credentials;
+           if (password !== cpassword) {
+             props.showAlert("Passwords do not match", "danger");
+             return;
+           }
             try {
               const response = await fetch("http://localhost:5000/api/auth/createuser", {
                 
@@ -15,7 +19,7 @@ const Signup = (props) => {
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name,email,password,cpassword}),
+                body: JSON.stringify({ name,email,password}),
               });
     
               const json = await response.json();
