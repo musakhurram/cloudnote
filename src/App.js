@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import About from "./components/About";
 import NoteState from "./context/notes/NoteState";
+import ThemeProvider from "./context/theme/themes";
 import Alert from "./components/Alert";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -37,22 +38,33 @@ function App() {
   };
 
   return (
-    <>
-   <NoteState>
-    <BrowserRouter>
-      <Navbar />
-      <Alert alert={alert}/>
-      <div className="container">
-      <Routes>
-        <Route path="/" element={<Home showAlert={showAlert} />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login showAlert={showAlert}/>} />
-        <Route path="/signup" element={<Signup showAlert={showAlert}/>} />
-      </Routes>
+    <ThemeProvider>
+      <div className="app-shell">
+        <NoteState>
+          <BrowserRouter>
+            <Navbar />
+            <Alert alert={alert} />
+            <main>
+              <Routes>
+                <Route path="/" element={<Home showAlert={showAlert} />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/login" element={<Login showAlert={showAlert} />} />
+                <Route path="/signup" element={<Signup showAlert={showAlert} />} />
+              </Routes>
+            </main>
+            <footer className="site-footer">
+              <div className="container">
+                <span className="footer-brand">
+                  <i className="fa-solid fa-cloud" aria-hidden="true"></i>
+                  CloudNote
+                </span>
+                <span className="footer-note">Your ideas, always in sync.</span>
+              </div>
+            </footer>
+          </BrowserRouter>
+        </NoteState>
       </div>
-    </BrowserRouter>
-   </NoteState>
-    </>
+    </ThemeProvider>
   );
 }
 

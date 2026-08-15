@@ -24,60 +24,65 @@ const Addnote = () => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
 
-  return (
-    <div className="container my-3">
-      <h1>Add a Note</h1>
+  const canSubmit = note.title.trim().length >= 3 && note.description.trim().length >= 5;
 
-      <form>
-        <div className="mb-3">
-          <label htmlFor="title" className="form-label">
-            Title
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="title"
-            name="title"
-            value={note.title}
-            onChange={onChange}
-          />
+  return (
+    <section className="addnote-card" aria-label="Add a note">
+      <h2 className="addnote-title">
+        <i className="fa-solid fa-plus" aria-hidden="true"></i>
+        Add a Note
+      </h2>
+
+      <form onSubmit={handleClick}>
+        <div className="field-grid">
+          <div className="form-group">
+            <label htmlFor="title" className="form-label">
+              Title
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="title"
+              name="title"
+              placeholder="What is this note about?"
+              value={note.title}
+              onChange={onChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="tag" className="form-label">
+              Tag
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="tag"
+              name="tag"
+              placeholder="General"
+              value={note.tag}
+              onChange={onChange}
+            />
+          </div>
+          <div className="form-group field-full">
+            <label htmlFor="description" className="form-label">
+              Description
+            </label>
+            <textarea
+              className="form-control"
+              id="description"
+              name="description"
+              placeholder="Write your thoughts..."
+              value={note.description}
+              onChange={onChange}
+            />
+          </div>
         </div>
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">
-            Description
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="description"
-            name="description"
-            value={note.description}
-            onChange={onChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="tag" className="form-label">
-            Tag
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="tag"
-            name="tag"
-            value={note.tag}
-            onChange={onChange}
-          />
-        </div>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          onClick={handleClick}
-          disabled={note.title.trim().length < 3 || note.description.trim().length < 5}
-        >
+        <button type="submit" className="btn btn-primary" disabled={!canSubmit}>
+          <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
           Add Note
         </button>
       </form>
-    </div>
+    </section>
   );
 };
 

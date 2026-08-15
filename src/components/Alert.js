@@ -9,16 +9,24 @@ function Alert(props) {
     return lower.charAt(0).toUpperCase() + lower.slice(1);
   };
 
+  if (!props.alert) return null;
+
+  const isError = props.alert.type === "danger";
+
   return (
-    <div style={{ height: "50px" }}>
-      {props.alert && (
-        <div
-          className={`alert alert-${props.alert.type} alert-dismissible fade show`}
-          role="alert"
-        >
-          <strong>{Capitalize(props.alert.type)}</strong>: {props.alert.msg}
-        </div>
-      )}
+    <div className="toast-wrap" role="alert" aria-live="assertive">
+      <div className={`toast ${isError ? "toast-error" : "toast-success"}`}>
+        <span className="toast-icon">
+          <i
+            className={`fa-solid ${isError ? "fa-circle-exclamation" : "fa-circle-check"}`}
+            aria-hidden="true"
+          ></i>
+        </span>
+        <span className="toast-msg">
+          <strong>{Capitalize(props.alert.type)}</strong>
+          {props.alert.msg}
+        </span>
+      </div>
     </div>
   );
 }
