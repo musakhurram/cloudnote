@@ -10,6 +10,23 @@ import Alert from "./components/common/Alert";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+// If the user is already signed in (token in localStorage), visiting /login
+// or /signup makes no sense — send them straight to the notes page instead.
+// This also fixes the browser-back-after-login case where a logged-in user
+// would otherwise land on the login form.
+const RedirectIfAuthenticated = ({ children }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
+
+  return children;
+};
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -49,8 +66,22 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home showAlert={showAlert} />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/login" element={<Login showAlert={showAlert} />} />
-                <Route path="/signup" element={<Signup showAlert={showAlert} />} />
+                <Route
+                  path="/login"
+                  element={
+                    <RedirectIfAuthenticated>
+                      <Login showAlert={showAlert} />
+                    </RedirectIfAuthenticated>
+                  }
+                />
+                <Route
+                  path="/signup"
+                  element={
+                    <RedirectIfAuthenticated>
+                      <Signup showAlert={showAlert} />
+                    </RedirectIfAuthenticated>
+                  }
+                />
               </Routes>
             </main>
             <Footer />

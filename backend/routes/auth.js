@@ -143,8 +143,10 @@ router.post('/google', async (req, res) => {
 
         res.json({ success: true, authToken, user });
     } catch (error) {
-        console.error(error.message);
-        res.status(401).json({ success: false, error: "Google token verification failed" });
+        console.error("Google token verification failed:", error.message);
+        // Surface the real reason (e.g. audience mismatch, invalid token) so
+        // frontend users and developers can see what went wrong.
+        res.status(401).json({ success: false, error: `Google token verification failed: ${error.message}` });
     }
 });
 

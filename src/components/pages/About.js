@@ -99,6 +99,33 @@ const About = () => {
         </div>
       </div>
 
+      <p className="about-section-label">How it works</p>
+
+      <div className="how-it-works">
+        <div className="how-steps">
+          <div className="how-step">
+            <div className="how-step-num">1</div>
+            <h3>Create your account</h3>
+            <p>Sign up in seconds with your email or Google account.</p>
+          </div>
+          <div className="how-step">
+            <div className="how-step-num">2</div>
+            <h3>Write your notes</h3>
+            <p>Capture ideas in a clean, distraction-free notebook editor.</p>
+          </div>
+          <div className="how-step">
+            <div className="how-step-num">3</div>
+            <h3>Tag & organize</h3>
+            <p>Add tags to keep every note findable at a glance.</p>
+          </div>
+          <div className="how-step">
+            <div className="how-step-num">4</div>
+            <h3>Sync everywhere</h3>
+            <p>Access your notes from any device, always in sync.</p>
+          </div>
+        </div>
+      </div>
+
       {!isLoggedIn && (
         <div className="about-cta">
           <h2>Ready to get organized?</h2>

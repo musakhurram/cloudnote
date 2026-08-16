@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import GoogleSignIn from "./GoogleSignIn";
+import PasswordInput from "./PasswordInput";
 import API_URL from "../../config";
 
 const Login = (props) => {
@@ -45,7 +46,7 @@ const Login = (props) => {
       <div className="auth-showcase">
         <span className="auth-showcase-brand">
           <i className="fa-solid fa-cloud" aria-hidden="true"></i>
-          Cloud<span className="brand-accent">Note</span>
+          <span>Cloud<span className="brand-accent">Note</span></span>
         </span>
         <div className="auth-showcase-quote">
           <p>"The best ideas are the ones you didn't have to remember to write down."</p>
@@ -94,18 +95,13 @@ const Login = (props) => {
             <label htmlFor="password" className="form-label">
               Password
             </label>
-            <div className="input-with-icon">
-              <i className="fa-solid fa-lock input-icon" aria-hidden="true"></i>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                placeholder="••••••••"
-                value={credentials.password}
-                onChange={onChange}
-              />
-            </div>
+            <PasswordInput
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              value={credentials.password}
+              onChange={onChange}
+            />
           </div>
           <button type="submit" className="btn btn-primary btn-block">
             <i className="fa-solid fa-right-to-bracket" aria-hidden="true"></i>

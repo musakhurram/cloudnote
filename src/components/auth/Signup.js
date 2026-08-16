@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import GoogleSignIn from "./GoogleSignIn";
+import PasswordInput from "./PasswordInput";
 import API_URL from "../../config";
 
 const Signup = (props) => {
@@ -51,7 +52,7 @@ const Signup = (props) => {
       <div className="auth-showcase">
         <span className="auth-showcase-brand">
           <i className="fa-solid fa-cloud" aria-hidden="true"></i>
-          Cloud<span className="brand-accent">Note</span>
+          <span>Cloud<span className="brand-accent">Note</span></span>
         </span>
         <div className="auth-showcase-quote">
           <p>"Start with an empty page. See how quickly it fills up."</p>
@@ -117,39 +118,29 @@ const Signup = (props) => {
             <label htmlFor="password" className="form-label">
               Password
             </label>
-            <div className="input-with-icon">
-              <i className="fa-solid fa-lock input-icon" aria-hidden="true"></i>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                placeholder="••••••••"
-                value={credentials.password}
-                onChange={onChange}
-                minLength={5}
-                required
-              />
-            </div>
+            <PasswordInput
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              value={credentials.password}
+              onChange={onChange}
+              minLength={5}
+              required
+            />
           </div>
           <div className="form-group">
             <label htmlFor="cpassword" className="form-label">
               Confirm Password
             </label>
-            <div className="input-with-icon">
-              <i className="fa-solid fa-lock input-icon" aria-hidden="true"></i>
-              <input
-                type="password"
-                className="form-control"
-                id="cpassword"
-                name="cpassword"
-                placeholder="••••••••"
-                value={credentials.cpassword}
-                onChange={onChange}
-                minLength={5}
-                required
-              />
-            </div>
+            <PasswordInput
+              id="cpassword"
+              name="cpassword"
+              placeholder="••••••••"
+              value={credentials.cpassword}
+              onChange={onChange}
+              minLength={5}
+              required
+            />
           </div>
           <button type="submit" className="btn btn-primary btn-block">
             <i className="fa-solid fa-user-plus" aria-hidden="true"></i>
