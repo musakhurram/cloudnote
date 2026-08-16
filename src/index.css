@@ -35,6 +35,7 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
+  --grid-dot: rgba(41, 38, 31, 0.09);
 }
 
 [data-theme="dark"] {
@@ -64,6 +65,7 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
   --overlay: rgba(7, 6, 4, 0.6);
+  --grid-dot: transparent;
 }
 
 * {
@@ -79,7 +81,10 @@ body {
 body {
   background-color: var(--bg);
   background-image: radial-gradient(1100px 520px at 85% -8%, var(--accent-soft), transparent 62%),
-    radial-gradient(800px 420px at -12% 12%, var(--bg-hover), transparent 58%);
+    radial-gradient(800px 420px at -12% 12%, var(--bg-hover), transparent 58%),
+    radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: auto, auto, 24px 24px;
+  background-position: 0 0, 0 0, -12px -12px;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 15px;
@@ -94,6 +99,14 @@ body {
 ::selection {
   background: var(--accent-soft);
   color: var(--text);
+}
+
+/* Dark mode swaps the dot grid (too noisy against a dark field) for a
+   quieter secondary glow, so the page still has depth without texture. */
+[data-theme="dark"] body {
+  background-image: radial-gradient(1100px 520px at 85% -8%, var(--accent-soft), transparent 62%),
+    radial-gradient(900px 480px at -10% 100%, rgba(212, 168, 58, 0.05), transparent 60%);
+  background-size: auto, auto;
 }
 
 .app-shell {
@@ -215,7 +228,12 @@ body {
 }
 
 .btn-primary:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-ghost:active:not(:disabled),
+.btn-danger-ghost:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .btn-ghost {
@@ -317,8 +335,14 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-.brand .brand-accent {
+.brand .brand-accent,
+.auth-showcase-brand .brand-accent {
   color: var(--accent);
+}
+
+.auth-showcase-brand i {
+  color: var(--accent);
+  margin-right: 2px;
 }
 
 .nav-toggle {
@@ -585,7 +609,8 @@ body {
 
 .theme-toggle.is-dark .theme-toggle-thumb {
   transform: translateX(22px);
-  background: linear-gradient(145deg, #7C8AB8, #3E4666);
+  background: linear-gradient(145deg, #7a5c1c, #4a3710);
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(212, 168, 58, 0.25);
 }
 
 @media (max-width: 720px) {
@@ -776,33 +801,115 @@ textarea.form-control {
 /* ============ Auth pages ============ */
 .auth-wrap {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+  align-items: stretch;
+  min-height: calc(100vh - 64px);
+}
+
+/* Left: an editorial brand panel — replaces the usual lone centered card
+   with something that reads like a designed product, not a template. */
+.auth-showcase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 56px 56px 40px;
+  overflow: hidden;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 30px,
+      color-mix(in srgb, var(--border) 65%, transparent) 31px
+    ),
+    radial-gradient(560px 320px at 100% 0%, var(--accent-soft), transparent 70%);
+}
+
+.auth-showcase-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--text);
+}
+
+.auth-showcase-quote {
+  max-width: 380px;
+}
+
+.auth-showcase-quote p {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+
+.auth-showcase-quote span {
+  font-size: 13px;
+  color: var(--text-faint);
+  letter-spacing: 0.02em;
+}
+
+.auth-showcase-card {
+  align-self: flex-start;
+  width: 240px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 16px 16px 14px;
+  transform: rotate(-3deg);
+}
+
+.auth-showcase-card .note-tag {
+  margin-top: 10px;
+}
+
+.auth-showcase-card-title {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.auth-showcase-card-line {
+  height: 7px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  margin-bottom: 6px;
+}
+
+.auth-showcase-card-line:nth-child(2) {
+  width: 82%;
+}
+
+@media (max-width: 900px) {
+  .auth-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-showcase {
+    display: none;
+  }
+}
+
+.auth-panel {
+  display: grid;
   place-items: center;
   padding: 48px 20px;
-  min-height: calc(100vh - 64px);
 }
 
 .auth-card {
   position: relative;
   overflow: hidden;
   width: 100%;
-  max-width: 440px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 40px 36px;
-  box-shadow: var(--shadow-md);
+  max-width: 400px;
   animation: fadeUp 0.35s ease both;
-}
-
-.auth-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
-  opacity: 0.85;
 }
 
 .auth-tag {
@@ -1168,6 +1275,13 @@ textarea.form-control {
 
 .note-card {
   background: var(--bg-card);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 27px,
+    color-mix(in srgb, var(--border) 70%, transparent) 28px
+  );
+  background-position: 0 64px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 18px 18px 16px;
@@ -1178,6 +1292,18 @@ textarea.form-control {
   height: 100%;
   animation: fadeUp 0.3s ease both;
   overflow: hidden;
+}
+
+.note-card::before {
+  /* A faint ruled-margin line, like a legal pad — the note's second paper cue. */
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 44px;
+  width: 1px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  pointer-events: none;
 }
 
 .note-card::after {
@@ -1316,16 +1442,33 @@ textarea.form-control {
 }
 
 .empty-icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 16px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
   display: grid;
   place-items: center;
-  border-radius: var(--radius-md);
-  font-size: 20px;
-  color: var(--accent);
-  background: var(--accent-soft);
-  border: 1px solid var(--accent-border);
+}
+
+.empty-icon svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.notebook-mark-page {
+  fill: var(--accent-soft);
+  stroke: var(--accent-border);
+  stroke-width: 1.5px;
+}
+
+.notebook-mark-rule {
+  stroke: var(--border-strong);
+}
+
+.notebook-mark-spine,
+.notebook-mark-ring {
+  stroke: var(--accent);
+  fill: none;
 }
 
 .empty-title {
@@ -1443,14 +1586,46 @@ textarea.form-control {
 }
 
 /* ============ About ============ */
+.about-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  padding: 7px 14px 7px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+
+.about-back i {
+  font-size: 12px;
+  transition: transform 0.15s ease;
+}
+
+.about-back:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+.about-back:hover i {
+  transform: translateX(-2px);
+}
+
 .about-hero {
   text-align: center;
-  max-width: 720px;
-  margin: 0 auto 48px;
+  max-width: 640px;
+  margin: 0 auto 40px;
 }
 
 .about-hero .page-title {
-  font-size: 34px;
+  font-size: 36px;
 }
 
 .about-hero p {
@@ -1460,43 +1635,85 @@ textarea.form-control {
   line-height: 1.65;
 }
 
+.about-stack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px auto 0;
+}
+
+.about-stack span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.about-stack i {
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.about-section-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 20px;
+}
+
 .feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
+  max-width: 760px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
 }
 
 .feature-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 26px 24px;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 32px;
+  align-items: start;
+  gap: 20px;
+  padding: 28px 4px;
+  border-bottom: 1px solid var(--border);
+  transition: padding-left 0.18s ease;
 }
 
 .feature-card:hover {
-  border-color: var(--accent-border);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  padding-left: 10px;
 }
 
 .feature-icon {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius-md);
-  font-size: 17px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--accent-border);
+  line-height: 1;
+  margin-bottom: 0;
+}
+
+.feature-card:hover .feature-icon {
   color: var(--accent);
-  background: var(--accent-soft);
-  border: 1px solid var(--accent-border);
-  margin-bottom: 16px;
+}
+
+.feature-icon i {
+  display: none;
 }
 
 .feature-card h3 {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--text);
 }
@@ -1506,6 +1723,64 @@ textarea.form-control {
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.6;
+  max-width: 46ch;
+}
+
+.feature-card-arrow {
+  color: var(--text-faint);
+  font-size: 14px;
+  justify-self: end;
+  margin-top: 6px;
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.feature-card:hover .feature-card-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+@media (max-width: 560px) {
+  .feature-card {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .feature-card-arrow {
+    display: none;
+  }
+}
+
+.about-cta {
+  max-width: 760px;
+  margin: 56px auto 0;
+  text-align: center;
+  padding: 40px 32px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 29px,
+    color-mix(in srgb, var(--border) 60%, transparent) 30px
+  );
+}
+
+.about-cta h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.about-cta p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0 0 22px;
+}
+
+.about-cta .btn {
+  padding: 11px 26px;
 }
 
 /* ============ Scrollbar ============ */

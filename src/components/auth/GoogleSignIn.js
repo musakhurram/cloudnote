@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../../config";
 
 // Google Sign-In button built on Google Identity Services (GIS).
 // Renders the official Google button, then sends the returned ID token
@@ -28,7 +29,7 @@ const GoogleSignIn = ({ showAlert, mode = "login" }) => {
 
     const handleCredential = async (response) => {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/google", {
+        const res = await fetch(`${API_URL}/api/auth/google`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idToken: response.credential }),

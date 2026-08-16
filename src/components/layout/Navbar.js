@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import NoteContext from "../context/notes/NoteContext";
-import ThemeContext from "../context/theme/ThemeContext";
-import ProfileDropdown from "./ProfileDropdown";
+import NoteContext from "../../context/notes/NoteContext";
+import ThemeContext from "../../context/theme/ThemeContext";
+import ProfileDropdown from "../auth/ProfileDropdown";
+import API_URL from "../../config";
 
 // Custom sun / moon marks for the theme toggle — drawn rather than pulled
 // from the icon font so each can carry its own tone (warm amber for day,
@@ -27,8 +28,10 @@ const MoonMark = () => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M20.5 14.2c-1.1.5-2.3.8-3.6.8-4.7 0-8.5-3.8-8.5-8.5 0-1.3.3-2.5.8-3.6C5.4 3.9 2.5 7.6 2.5 12c0 5.2 4.3 9.5 9.5 9.5 4.4 0 8.1-2.9 9.2-6.9.1-.2 0-.4-.2-.5-.2-.1-.4 0-.5.1z"
-      fill="#F3F0E4"
+      fill="#FFFDF7"
     />
+    <circle cx="16.5" cy="6.5" r="0.9" fill="#FFFDF7" opacity="0.85" />
+    <circle cx="12.5" cy="4.2" r="0.6" fill="#FFFDF7" opacity="0.65" />
   </svg>
 );
 
@@ -58,7 +61,7 @@ const Navbar = () => {
       return;
     }
     let cancelled = false;
-    fetch("http://localhost:5000/api/auth/getuser", {
+    fetch(`${API_URL}/api/auth/getuser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

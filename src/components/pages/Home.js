@@ -1,4 +1,4 @@
-import Notes from "./Notes";
+import Notes from "../notes/Notes";
 
 
 const Home = (props) => {

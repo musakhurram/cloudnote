@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from "react";
 import NoteContext from "./NoteContext";
+import API_URL from "../../config";
 
 const NoteState = (props) => {
-  const host = "http://localhost:5000";
+  const host = API_URL;
   const [notes, setNotes] = useState([]);
 
   const authHeaders = () => ({

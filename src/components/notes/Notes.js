@@ -1,11 +1,33 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
-import NoteContext from "../context/notes/NoteContext";
+import NoteContext from "../../context/notes/NoteContext";
 import { useNavigate } from "react-router-dom";
 
 const ALL_KEY = "__all__";
 const UNTAGGED_KEY = "__untagged__";
+
+// A small hand-drawn notebook mark for empty states — quieter and more on-brand
+// than an icon dropped into a colored circle.
+const NotebookMark = () => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="7" width="40" height="50" rx="4" className="notebook-mark-page" />
+    <path d="M10 17h40M10 27h40M10 37h26" className="notebook-mark-rule" strokeLinecap="round" strokeWidth="1.6" />
+    <path d="M46 7c5.5.6 9 4.2 9 9.5v31c0 5.8-4 9.5-9 9.5" className="notebook-mark-spine" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="4" cy="16" r="2" className="notebook-mark-ring" />
+    <circle cx="4" cy="32" r="2" className="notebook-mark-ring" />
+    <circle cx="4" cy="48" r="2" className="notebook-mark-ring" />
+  </svg>
+);
+
+const SearchMark = () => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="7" width="40" height="50" rx="4" className="notebook-mark-page" />
+    <path d="M10 17h40M10 27h22" className="notebook-mark-rule" strokeLinecap="round" strokeWidth="1.6" />
+    <circle cx="38" cy="41" r="9" className="notebook-mark-spine" strokeWidth="2.2" />
+    <line x1="44.8" y1="47.8" x2="52" y2="55" className="notebook-mark-spine" strokeWidth="2.4" strokeLinecap="round" />
+  </svg>
+);
 
 const Notes = () => {
   const context = useContext(NoteContext);
@@ -227,7 +249,7 @@ const Notes = () => {
           {notes.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">
-                <i className="fa-solid fa-note-sticky" aria-hidden="true"></i>
+                <NotebookMark />
               </div>
               <h2 className="empty-title">No notes yet</h2>
               <p className="empty-text">
@@ -237,10 +259,7 @@ const Notes = () => {
           ) : visibleNotes.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">
-                <i
-                  className="fa-solid fa-magnifying-glass"
-                  aria-hidden="true"
-                ></i>
+                <SearchMark />
               </div>
               <h2 className="empty-title">No matching notes</h2>
               <p className="empty-text">

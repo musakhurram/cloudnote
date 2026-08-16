@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const mongoURI = "mongodb://localhost:27017/cloudnote";
+// MongoDB connection string. In production, set MONGO_URI to your hosted
+// database (e.g. MongoDB Atlas). Falls back to local MongoDB for development.
+const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/cloudnote";
 
 const connectToMongo = async () => {
   try {
