@@ -5,7 +5,10 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fetchuser = require('../middleware/fetchuser');
-const { JWT_SECRET } = require('../config');
+const { JWT_SECRET, GOOGLE_CLIENT_ID } = require('../config');
+const { OAuth2Client } = require('google-auth-library');
+
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 //ROUTE 1: create a user using: POST "/api/auth/createuser" No login required
 router.post('/createuser', [
@@ -89,7 +92,63 @@ router.post('/login', [
     }
 });
 
-//ROUTE 3: Get user details using: POST "/api/auth/getuser" login required
+//ROUTE 3: Authenticate with Google using: POST "/api/auth/google" No login required
+// The frontend sends the ID token from Google Identity Services; we verify it
+// here and either find the existing user or create a new one, then issue our JWT.
+router.post('/google', async (req, res) => {
+    const { idToken } = req.body;
+    if (!idToken) {
+        return res.status(400).json({ success: false, error: "Missing Google ID token" });
+    }
+    if (!GOOGLE_CLIENT_ID) {
+        return res.status(500).json({ success: false, error: "Google sign-in is not configured on the server" });
+    }
+
+    try {
+        const ticket = await googleClient.verifyIdToken({
+            idToken,
+            audience: GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        if (!payload || !payload.email) {
+            return res.status(400).json({ success: false, error: "Invalid Google token" });
+        }
+
+        const { email, name, picture, sub } = payload;
+
+        // Find the user by email, or create one from the Google profile.
+        let user = await User.findOne({ email });
+        if (!user) {
+            user = await User.create({
+                name: name || email.split('@')[0],
+                email,
+                password: null,
+                picture: picture || null,
+                googleId: sub,
+            });
+        } else {
+            // Keep the profile fresh for returning users.
+            if (picture && !user.picture) user.picture = picture;
+            if (name && !user.name) user.name = name;
+            if (sub && !user.googleId) user.googleId = sub;
+            await user.save();
+        }
+
+        const data = {
+            user: {
+                id: user.id
+            }
+        };
+        const authToken = jwt.sign(data, JWT_SECRET);
+
+        res.json({ success: true, authToken, user });
+    } catch (error) {
+        console.error(error.message);
+        res.status(401).json({ success: false, error: "Google token verification failed" });
+    }
+});
+
+//ROUTE 4: Get user details using: POST "/api/auth/getuser" login required
 router.post('/getuser', fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;

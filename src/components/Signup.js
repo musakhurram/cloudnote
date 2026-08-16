@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import GoogleSignIn from "./GoogleSignIn";
 
 const Signup = (props) => {
   const navigate = useNavigate();
@@ -133,6 +134,8 @@ const Signup = (props) => {
             Create Account
           </button>
         </form>
+
+        <GoogleSignIn showAlert={props.showAlert} mode="signup" />
 
         <p className="auth-switch">
           Already have an account? <Link to="/login">Sign in</Link>

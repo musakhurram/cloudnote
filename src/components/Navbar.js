@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import NoteContext from "../context/notes/NoteContext";
 import ThemeContext from "../context/theme/ThemeContext";
+import ProfileDropdown from "./ProfileDropdown";
 
 // Custom sun / moon marks for the theme toggle — drawn rather than pulled
 // from the icon font so each can carry its own tone (warm amber for day,
@@ -38,7 +39,7 @@ const Navbar = () => {
   const { theme, setThemePreference } = useContext(ThemeContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [user, setUser] = useState(null);
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
@@ -50,10 +51,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Greet the signed-in user by name (initial shown in the avatar chip).
+  // Load the signed-in user's profile (name, email, member since).
   useEffect(() => {
     if (!isLoggedIn) {
-      setUserName("");
+      setUser(null);
       return;
     }
     let cancelled = false;
@@ -65,8 +66,8 @@ const Navbar = () => {
       },
     })
       .then((res) => (res.ok ? res.json() : null))
-      .then((user) => {
-        if (!cancelled && user && user.name) setUserName(user.name);
+      .then((data) => {
+        if (!cancelled && data && data.name) setUser(data);
       })
       .catch(() => {});
     return () => {
@@ -77,7 +78,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setNotes([]);
-    setUserName("");
+    setUser(null);
     navigate("/login");
   };
 
@@ -140,29 +141,13 @@ const Navbar = () => {
             </button>
 
             {isLoggedIn ? (
-              <div className="nav-user">
-                <span
-                  className="nav-avatar"
-                  title={userName || "Account"}
-                  aria-hidden="true"
-                >
-                  {userName ? userName.trim().charAt(0).toUpperCase() : "U"}
-                </span>
-                <button
-                  type="button"
-                  className="btn btn-danger-ghost"
-                  onClick={() => {
-                    handleLogout();
-                    closeMenu();
-                  }}
-                >
-                  <i
-                    className="fa-solid fa-arrow-right-from-bracket"
-                    aria-hidden="true"
-                  ></i>
-                  Logout
-                </button>
-              </div>
+              <ProfileDropdown
+                user={user}
+                onLogout={() => {
+                  handleLogout();
+                  closeMenu();
+                }}
+              />
             ) : (
               <>
                 <NavLink

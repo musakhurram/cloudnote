@@ -8,11 +8,20 @@ const UserSchema = new Schema({
    email: {
     type: String,
     required: true,
-    unique: true    
+    unique: true
   },
    password: {
     type: String,
-    required: true
+    // Not required — Google sign-in users have no password.
+    default: null
+  },
+   picture: {
+    type: String,
+    default: null
+  },
+   googleId: {
+    type: String,
+    default: null
   },
    date: {
     type: Date,
