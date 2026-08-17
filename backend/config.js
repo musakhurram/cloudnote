@@ -6,10 +6,13 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 // JWT signing secret — MUST be overridden in production via the JWT_SECRET
 // environment variable. Never commit a real secret to version control.
-const JWT_SECRET = process.env.JWT_SECRET || "ThisIsMySecretKey";
+// In production we fail fast if it is missing rather than silently using
+// the well-known development fallback (which would let anyone forge tokens).
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 // Google OAuth client ID — used to verify Google ID tokens on the backend.
 // Create one at https://console.cloud.google.com/apis/credentials
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ;
 
 module.exports = { JWT_SECRET, GOOGLE_CLIENT_ID };
