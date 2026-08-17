@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
-
-// MongoDB connection string. In production, set MONGO_URI to your hosted
-// database (e.g. MongoDB Atlas). Falls back to local MongoDB for development.
-const mongoURI = process.env.MONGO_URI;
+const { MONGO_URI } = require("./config");
 
 const connectToMongo = async () => {
   try {
-    await mongoose.connect(mongoURI);
+    await mongoose.connect(MONGO_URI);
     console.log("Connected to Mongo Successfully");
   } catch (error) {
     console.error("MongoDB connection failed:", error);

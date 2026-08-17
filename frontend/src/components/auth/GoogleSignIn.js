@@ -8,13 +8,23 @@ import API_URL from "../../config";
 const GoogleSignIn = ({ showAlert, mode = "login" }) => {
   const navigate = useNavigate();
   const buttonRef = useRef(null);
-  const clientRef = useRef(null);
 
   const [configError, setConfigError] = useState(null);
 
+  // Keep the latest showAlert/navigate available inside the effect below
+  // without needing them in its dependency array — they're prop/hook
+  // values that can change reference on every parent re-render, and we
+  // don't want that to re-trigger google.accounts.id.initialize().
+  const showAlertRef = useRef(showAlert);
+  const navigateRef = useRef(navigate);
+  useEffect(() => {
+    showAlertRef.current = showAlert;
+    navigateRef.current = navigate;
+  });
+
   useEffect(() => {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-    if (!clientId || clientId === "YOUR_GOOGLE_CLIENT_ID_HERE") {
+    if (!clientId) {
       setConfigError(
         "Google sign-in is not configured. Add your client ID to the .env file (REACT_APP_GOOGLE_CLIENT_ID).",
       );
@@ -37,23 +47,23 @@ const GoogleSignIn = ({ showAlert, mode = "login" }) => {
         const json = await res.json();
         if (json.success && json.authToken) {
           localStorage.setItem("token", json.authToken);
-          showAlert(
+          showAlertRef.current(
             mode === "login"
               ? "Logged in with Google"
               : "Account created with Google",
             "success",
           );
-          navigate("/");
+          navigateRef.current("/");
         } else {
-          showAlert(json.error || "Google sign-in failed", "danger");
+          showAlertRef.current(json.error || "Google sign-in failed", "danger");
         }
       } catch (error) {
         console.error("Google sign-in error:", error);
-        showAlert("Network or server error", "danger");
+        showAlertRef.current("Network or server error", "danger");
       }
     };
 
-    clientRef.current = window.google.accounts.id.initialize({
+    window.google.accounts.id.initialize({
       client_id: clientId,
       callback: handleCredential,
     });
@@ -65,7 +75,7 @@ const GoogleSignIn = ({ showAlert, mode = "login" }) => {
       width: 366,
       text: mode === "login" ? "signin_with" : "signup_with",
     });
-  }, [mode, navigate, showAlert]);
+  }, [mode]);
 
   return (
     <div className="google-signin">
