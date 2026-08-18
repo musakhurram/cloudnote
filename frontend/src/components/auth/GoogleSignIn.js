@@ -24,12 +24,6 @@ const GoogleSignIn = ({ showAlert, mode = "login" }) => {
 
   useEffect(() => {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      setConfigError(
-        "Google sign-in is not configured. Add your client ID to the .env file (REACT_APP_GOOGLE_CLIENT_ID).",
-      );
-      return;
-    }
     if (!window.google) {
       setConfigError("Google sign-in script failed to load.");
       return;
