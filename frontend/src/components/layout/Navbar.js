@@ -40,7 +40,6 @@ const Navbar = () => {
   const context = useContext(NoteContext);
   const { setNotes } = context;
   const { theme, setThemePreference } = useContext(ThemeContext);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -85,8 +84,6 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const closeMenu = () => setMenuOpen(false);
-
   const isDark = theme === "dark";
   const toggleTheme = () => setThemePreference(isDark ? "light" : "dark");
 
@@ -94,7 +91,7 @@ const Navbar = () => {
     <nav className={`navbar ${scrolled ? "is-scrolled" : ""}`}>
       <div className="container">
         <div className="navbar-inner">
-          <NavLink className="brand" to="/" onClick={closeMenu}>
+          <NavLink className="brand" to="/">
             <span className="brand-icon">
               <i className="fa-solid fa-cloud" aria-hidden="true"></i>
             </span>
@@ -102,33 +99,22 @@ const Navbar = () => {
               Cloud<span className="brand-accent">Note</span>
             </span>
           </NavLink>
-          <button
-            className="nav-toggle"
-            type="button"
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label="Toggle navigation"
-            aria-expanded={menuOpen}
+
+          {/* Always visible — no hamburger/collapsed menu. About sits
+              next to the brand; the theme toggle and profile chip (or
+              login/signup) are pinned to the far right edge, at every
+              screen size, so they're never hidden on mobile. */}
+          <NavLink
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
+            to="/about"
           >
-            <i
-              className={`fa-solid ${menuOpen ? "fa-xmark" : "fa-bars"}`}
-              aria-hidden="true"
-            ></i>
-          </button>
-        </div>
+            <i className="fa-solid fa-circle-info" aria-hidden="true"></i>{" "}
+            <span className="nav-link-text">About</span>
+          </NavLink>
 
-        <div className={`navbar-menu ${menuOpen ? "open" : ""}`}>
           <div className="nav-actions">
-            <NavLink
-              className={({ isActive }) =>
-                `nav-link ${isActive ? "active" : ""}`
-              }
-              to="/about"
-              onClick={closeMenu}
-            >
-              <i className="fa-solid fa-circle-info" aria-hidden="true"></i>{" "}
-              About
-            </NavLink>
-
             <button
               type="button"
               className={`theme-toggle ${isDark ? "is-dark" : ""}`}
@@ -144,27 +130,13 @@ const Navbar = () => {
             </button>
 
             {isLoggedIn ? (
-              <ProfileDropdown
-                user={user}
-                onLogout={() => {
-                  handleLogout();
-                  closeMenu();
-                }}
-              />
+              <ProfileDropdown user={user} onLogout={handleLogout} />
             ) : (
               <>
-                <NavLink
-                  className="btn btn-ghost"
-                  to="/login"
-                  onClick={closeMenu}
-                >
+                <NavLink className="btn btn-ghost" to="/login">
                   Login
                 </NavLink>
-                <NavLink
-                  className="btn btn-primary"
-                  to="/signup"
-                  onClick={closeMenu}
-                >
+                <NavLink className="btn btn-primary" to="/signup">
                   Signup
                 </NavLink>
               </>

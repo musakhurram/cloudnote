@@ -298,7 +298,7 @@ body {
 .navbar-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 64px;
   gap: 12px;
 }
@@ -345,27 +345,6 @@ body {
   margin-right: 2px;
 }
 
-.nav-toggle {
-  display: none;
-  background: var(--bg-card);
-  border: 1px solid var(--border-strong);
-  color: var(--text);
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  font-size: 15px;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
-}
-
-.nav-toggle:hover {
-  border-color: var(--accent-border);
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-
 .nav-link {
   display: inline-flex;
   align-items: center;
@@ -390,15 +369,13 @@ body {
   font-weight: 600;
 }
 
-.navbar-menu {
-  display: flex;
-  align-items: center;
-}
-
 .nav-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
+  margin-left: auto; /* pins the theme toggle + profile/auth buttons to
+                         the far right edge, separate from the About link */
 }
 
 .nav-actions .btn {
@@ -614,52 +591,42 @@ body {
 }
 
 @media (max-width: 720px) {
-  .nav-toggle {
-    display: inline-flex;
-  }
-
   .navbar-inner {
-    flex-wrap: wrap;
-    flex: 1 1 100%;
-    height: 60px;
-  }
-
-  .navbar-menu {
-    display: none;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    width: 100%;
-    padding: 6px 0 18px;
-    border-top: 1px solid var(--border);
-    margin-top: 4px;
-  }
-
-  .navbar-menu.open {
-    display: flex;
-  }
-
-  .nav-link {
-    padding: 12px 14px;
-    border-radius: var(--radius-md);
+    height: 58px;
+    gap: 8px;
   }
 
   .nav-actions {
-    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .nav-actions .btn {
-    flex: 1;
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+}
+
+/* Below ~480px there isn't room for the brand text, the About label, the
+   theme toggle AND the profile/auth buttons on one row. Rather than
+   hiding the theme toggle or profile dropdown (the two controls the user
+   most needs on mobile), trim the About link down to just its icon and
+   tighten the brand — the toggle and profile chip stay fully visible. */
+@media (max-width: 480px) {
+  .brand-text {
+    display: none;
   }
 
-  .theme-toggle {
-    flex: none;
+  .nav-link-text {
+    display: none;
   }
 
-  .nav-user {
-    flex: 1 1 100%;
-    justify-content: space-between;
-    padding: 2px 2px 0;
+  .nav-link {
+    padding: 8px 10px;
+  }
+
+  .nav-actions .btn {
+    padding: 7px 10px;
+    font-size: 12.5px;
   }
 }
 
@@ -2031,4 +1998,3 @@ textarea.form-control {
   color: var(--text-faint);
   font-size: 12.5px;
 }
-
