@@ -301,6 +301,9 @@ body {
   justify-content: flex-start;
   height: 64px;
   gap: 12px;
+  flex: 1; /* stretch to fill .navbar .container (which is itself a flex
+              row), otherwise this shrinks to its content width and
+              margin-left:auto on .nav-actions has nothing to push against */
 }
 
 .brand {
